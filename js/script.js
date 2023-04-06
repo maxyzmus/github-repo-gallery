@@ -1,5 +1,6 @@
 const overview = document.querySelector(".overview"); // Selects the overview class
 const username = "maxyzmus"; // Your GitHub username
+const repoList = document.querySelector(".repo-list"); // Selects the repo-list class
 
 async function gitUserInfo() { // Creates an async function to fetch the user info from the GitHub API
     const userInfo = await fetch(`https://api.github.com/users/${username}`); // Fetches the user info from the GitHub API
@@ -29,3 +30,20 @@ const displayUserInfo = function (data) { // Creates a function to display the u
 
 gitUserInfo(); // Calls the gitUserInfo function
 
+const gitRepos = async function () { // Creates an async function to fetch the repo info from the GitHub API
+    const fetchRepos = await fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=100`); // Fetches the repo info from the GitHub API
+    const repoData = await fetchRepos.json(); // Converts the response to JSON
+    console.log(repoData); // Logs the data to the console
+    displayRepos(repoData); // Calls the displayRepos function
+    };
+
+const displayRepos = function (repos) { // Creates a function to display the repo info
+    for (const repo of repos) { // Loops through the repos
+        const li = document.createElement("li"); // Creates a new li element
+        li.classList.add("repo"); // Adds a class of repo to the li
+        li.innerHTML = `<h3>${repo.name}</h3>`; // Inserts the repo name into the li
+        repoList.append(li); // Appends the li to the repo-list class
+    }
+};
+
+gitRepos(); // Calls the gitRepos function
