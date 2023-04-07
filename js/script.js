@@ -3,6 +3,8 @@ const username = "maxyzmus"; // Your GitHub username
 const repoList = document.querySelector(".repo-list"); // Selects the repo-list class
 const allReposContainer = document.querySelector(".repos"); // Selects the repos class
 const repoData = document.querySelector(".repo-data"); // Selects the repo-data class
+const backToRepoButton = document.querySelector(".view-repos"); // Selects the view-repos class
+const filterInput = document.querySelector(".filter-repos"); // Selects the filter-repos class
 
 async function gitUserInfo() { // Creates an async function to fetch the user info from the GitHub API
     const userInfo = await fetch(`https://api.github.com/users/${username}`); // Fetches the user info from the GitHub API
@@ -61,19 +63,16 @@ const getRepoInfo = async function (repoName) { // Creates an async function to 
     const fetchInfo = await fetch(`https://api.github.com/repos/${username}/${repoName}`); // Fetches the specific repo info from the GitHub API
     const repoInfo = await fetchInfo.json(); // Converts the response to JSON
     console.log(repoInfo); // Logs the data to the console
-    if (repoInfo) { // Checks if the repo info exists
-        displayRepoInfo(repoInfo); // Calls the displayRepoInfo function
-    }
-    const fetchLanguages = await fetch(`https://api.github.com/repos/${username}/${repoName}/languages`); // Fetches the languages info from the GitHub API
+
+    const fetchLanguages = await fetch(repoInfo.languages_url); // Fetches the languages from the GitHub API
     const languageData = await fetchLanguages.json(); // Converts the response to JSON
     console.log(languageData); // Logs the data to the console
-    const languages = []; // Creates an empty array to store the languages
-    for (const language in languageData) { // Loops through the languages
-        languages.push(language); // Pushes the languages into the languages array
-    }
-};  
+    const languages = Object.keys(languageData); // Stores the languages in an array
 
-const displayRepoInfo = function (repoInfo) { // Creates a function to display the specific repo info
+    displayRepoInfo(repoInfo, languages); // Calls the displayRepoInfo function
+};
+
+const displayRepoInfo = function (repoInfo, languages) { // Creates a function to display the specific repo info and languages
     const div = document.createElement("div"); // Creates a new div element
     div.classList.add("repo-info"); // Adds a class of repo-info to the div
     div.innerHTML = `
@@ -87,4 +86,10 @@ const displayRepoInfo = function (repoInfo) { // Creates a function to display t
     repoData.classList.remove("hide"); // Removes the hide class from the repo-data class
     allReposContainer.classList.add("hide"); // Adds the hide class to the repos class
 };
+
+backToRepoButton.addEventListener("click", function () { // Adds an event listener to the view-repos class
+    allReposContainer.classList.remove("hide"); // Removes the hide class from the repos class
+    repoData.classList.add("hide"); // Adds the hide class to the repo-data class
+    repoData.innerHTML = ""; // Clears the repo-data class
+});
 
