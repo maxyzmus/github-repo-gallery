@@ -47,6 +47,7 @@ const displayRepos = function (repos) { // Creates a function to display the rep
         li.classList.add("repo"); // Adds a class of repo to the li
         li.innerHTML = `<h3>${repo.name}</h3>`; // Inserts the repo name into the li
         repoList.append(li); // Appends the li to the repo-list class
+        filterInput.classList.remove("hide"); // Removes the hide class from the filter-repos class
     }
 };
 
@@ -73,6 +74,10 @@ const getRepoInfo = async function (repoName) { // Creates an async function to 
 };
 
 const displayRepoInfo = function (repoInfo, languages) { // Creates a function to display the specific repo info and languages
+    filterInput.classList.remove("hide"); // Removes the hide class from the filter-repos class
+    repoData.innerHTML = ""; // Clears the repo-data class
+    repoData.classList.remove("hide"); // Removes the hide class from the repo-data class
+    allReposContainer.classList.add("hide"); // Adds the hide class to the repos class
     const div = document.createElement("div"); // Creates a new div element
     div.classList.add("repo-info"); // Adds a class of repo-info to the div
     div.innerHTML = `
@@ -85,11 +90,28 @@ const displayRepoInfo = function (repoInfo, languages) { // Creates a function t
     repoData.append(div); // Appends the div to the repo-data class
     repoData.classList.remove("hide"); // Removes the hide class from the repo-data class
     allReposContainer.classList.add("hide"); // Adds the hide class to the repos class
+    backToRepoButton.classList.remove("hide"); // Removes the hide class from the view-repos class
 };
 
 backToRepoButton.addEventListener("click", function () { // Adds an event listener to the view-repos class
     allReposContainer.classList.remove("hide"); // Removes the hide class from the repos class
     repoData.classList.add("hide"); // Adds the hide class to the repo-data class
     repoData.innerHTML = ""; // Clears the repo-data class
+    backToRepoButton.classList.add("hide"); // Adds the hide class to the view-repos class
+});
+
+filterInput.addEventListener("input", function (e) { // Adds an event listener to the filter-repos class
+    const searchText = e.target.value; // Stores the search text
+    const repos = document.querySelectorAll(".repo"); // Selects all the repo class elements
+    const searchTextLower = searchText.toLowerCase(); // Converts the search text to lowercase
+
+    for (const repo of repos) { // Loops through the repos
+        const repoLowerText = repo.innerText.toLowerCase(); // Converts the repo text to lowercase
+        if (repoLowerText.includes(searchTextLower)) { // Checks if the repo text includes the search text
+            repo.classList.remove("hide"); // Removes the hide class from the repo
+        } else {
+            repo.classList.add("hide"); // Adds the hide class to the repo
+        }
+    }
 });
 
